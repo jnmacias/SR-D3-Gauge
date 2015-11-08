@@ -1,0 +1,9 @@
+{
+    "name" : "D3 Gauge SR",
+    "description" : "Gauge Visualization",
+    "icon" : "gauge-chart",
+    "type" : "visualization",
+    "version": "1.0",
+    "preview" : "SR.png",
+    "author": "Sangram Reddy(sangram@sanridge.co.uk)"
+}
