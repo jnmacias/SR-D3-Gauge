@@ -38,6 +38,15 @@ define(["jquery", "./d3.min", "./d3.layout.cloud", "text!./styles.css"], functio
                     uses : "measures",
                     min : 1,
                     max : 1
+				 /* items : {
+                    dynamicColor : {
+                            type  : "string",
+                            label : "Colour Expression",
+                            ref   : "qAttributeExpressions.0.qExpression",
+		                    expression: "always"
+                        }
+                    
+                  }*/
                 },
                 addons : {
                     uses : "addons",
@@ -74,12 +83,21 @@ define(["jquery", "./d3.min", "./d3.layout.cloud", "text!./styles.css"], functio
                             label : "Higher Limit Colour",
                             type : "string",
                             defaultValue : "#92d050"
+                        },
+					   Textcolor    : {  
+                    ref: "zSRcolor",  
+				    label : "Text Colour",
+                    translation: "properties.color",  
+                    type: "integer",  
+                    component: "color-picker",  
+                    defaultValue: 3  
                         }
                     }
                 },
                 settings : {
                     uses : "settings"
                 }
+			    
             }
         },
         snapshot : {
@@ -90,23 +108,50 @@ define(["jquery", "./d3.min", "./d3.layout.cloud", "text!./styles.css"], functio
           debugger;
 					console.log($element);
                     console.log(layout);
-          
-          var value = layout.qHyperCube.qDataPages[0].qMatrix[0];
+		  
           var format = layout.qHyperCube.qMeasureInfo[0].qNumFormat.qFmt;
-          var tFormat;
-          
+		  var d3Format;
+          var value = layout.qHyperCube.qDataPages[0].qMatrix[0];
+		  var textColor;
           sst = value[0].qNum;
-          SST = sst;
-          
-          if(format.indexOf('%') != -1){
-            tFormat = ",%";
-            //SST = Math.round(SST).toFixed(6);
-          }else{
-            SST = Math.round(SST).toFixed(3);
-          }
-      
-      
-	
+		  SST = sst;
+		  
+		  if(format){ 
+			
+		  if(format.indexOf('%') != (-1)){
+			d3Format = '<,%';
+		  }else{
+			//SST = Math.round(SST).toFixed(3);
+		  }
+			
+			}
+		  
+		  if (layout.zSRcolor == 0){
+			textColor = "#C7CED1";
+		  }else if(layout.zSRcolor == 1){
+			textColor = "#9AA3A6";
+		  }else if(layout.zSRcolor == 2){
+			textColor = "#5B6366";
+		  }else if(layout.zSRcolor == 3){
+			textColor = "#2B7BBD";
+		  }else if(layout.zSRcolor == 4){
+			textColor = "#A6C5DE";
+		  }else if(layout.zSRcolor == 5){
+			textColor = "#CBE3F7";
+		  }else if(layout.zSRcolor == 6){
+			textColor = "#58DB46";
+		  }else if(layout.zSRcolor == 7){
+			textColor = "#FF0000";
+		  }else if(layout.zSRcolor == 8){
+			textColor = "#FFD000";
+		  }else if(layout.zSRcolor == 9){
+			textColor = "#0A7818";
+		  }else if(layout.zSRcolor == 10){
+			textColor = "#FFFFFF";
+		  }else if(layout.zSRcolor == 11){
+			textColor = "#000000";
+		  } 
+
       rSST = SST;
       SSTdisplay = rSST;
           
@@ -125,7 +170,7 @@ define(["jquery", "./d3.min", "./d3.layout.cloud", "text!./styles.css"], functio
     }    
           
           if(value[0].qText != "" || value[0].qText != null() ){
-            layout.subtitle = value[0].qText;
+            //layout.subtitle = value[0].qText;
           }   
           
             Vwidth = width;
@@ -133,7 +178,7 @@ define(["jquery", "./d3.min", "./d3.layout.cloud", "text!./styles.css"], functio
             Rwidth = width*0.15;
             var Vsize = height*1.4;
         
-        viz(rSST,id,Vwidth,Vheight,Rwidth,Vsize,layout.Lcolour,layout.Hcolour,layout.RadStart,layout.RadEnd,layout.MaxSize,tFormat); 
+        viz(rSST,id,Vwidth,Vheight,Rwidth,Vsize,layout.Lcolour,layout.Hcolour,layout.RadStart,layout.RadEnd,layout.MaxSize,d3Format,value[0].qText,textColor); 
          
           //document.getElementById('Bhead').innerHTML = layout.title+' : '+value[0].qText;
         }
@@ -144,11 +189,12 @@ define(["jquery", "./d3.min", "./d3.layout.cloud", "text!./styles.css"], functio
 
 // Gauge Visualization
 
-function viz(value,id,width,height,radius,Csize,Lcolour,Hcolour,Radstart,Radend,Segments,format){
+function viz(value,id,width,height,radius,Csize,Lcolour,Hcolour,Radstart,Radend,Segments,format,textValue,textColor){
   
   if(!format){
-    format = ",g";
+	format = ',.2s';
   }
+  
   
   var gauge = function(container, configuration) {
 	var that = {};
@@ -278,7 +324,9 @@ function viz(value,id,width,height,radius,Csize,Lcolour,Hcolour,Radstart,Radend,
 					var newAngle = config.minAngle + (ratio * range);
 					return 'rotate(' +newAngle +') translate(0,' +(config.labelInset - r) +')';
 				})
-				.text(config.labelFormat);
+				.text(config.labelFormat)
+		        .attr('text-anchor','middle')
+		        .attr('alignment-baseline','central');
 
 		var lineData = [ [config.pointerWidth / 2, 0], 
 						[0, -pointerHeadLength],
@@ -289,6 +337,18 @@ function viz(value,id,width,height,radius,Csize,Lcolour,Hcolour,Radstart,Radend,
 		var pg = svg.append('g').data([lineData])
 				.attr('class', 'pointer')
 				.attr('transform', centerTx);
+	  
+	    var text = svg.append('text')
+		           .text(textValue)
+		           .attr('id','zMyText')
+				   .attr('transform',function(d){
+		            return 'translate('+ r +','+ r*0.8 +')';
+		           })
+		           .attr('text-anchor','middle')
+		           .attr('alignment-baseline','central')
+		           .attr('font-family','sans-serif')
+		           .attr('fill',function(d){return textColor})
+		           .attr('font-size','35px');
 				
 		pointer = pg.append('path')
 			.attr('d', pointerLine/*function(d) { return pointerLine(d) +'Z';}*/ )
