@@ -56,13 +56,15 @@ define(["jquery", "./d3.min", "./d3.layout.cloud", "text!./styles.css"], functio
                             ref : "RadStart",
                             label : "Lower Limit",
                             type : "number",
-                            defaultValue : 0
+                            defaultValue : 0,
+                            expression: "optional"
                         },
                         RadEnd : {
                             ref : "RadEnd",
                             label : "Higher Limit",
                             type : "number",
-                            defaultValue : 100
+                            defaultValue : 100,
+                            expression: "optional"
                         },
                         MaxSize : {
                             ref : "MaxSize",
@@ -70,19 +72,22 @@ define(["jquery", "./d3.min", "./d3.layout.cloud", "text!./styles.css"], functio
                             type : "integer",
                             defaultValue : 6,
                             min : 2,
-                            max : 20
+                            max : 20,
+                            expression: "optional"
                         },
                         Lcolour : {
                             ref : "Lcolour",
                             label : "Lower Limit Colour",
                             type : "string",
-                            defaultValue : "#ff0000"
+                            defaultValue : "#ff0000",
+                            expression: "optional"
                         },
                         Hcolour : {
                             ref : "Hcolour",
                             label : "Higher Limit Colour",
                             type : "string",
-                            defaultValue : "#92d050"
+                            defaultValue : "#92d050",
+                            expression: "optional"
                         },
 					   Textcolor    : {  
                     ref: "zSRcolor",  
