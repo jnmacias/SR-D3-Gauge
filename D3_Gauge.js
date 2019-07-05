@@ -109,10 +109,6 @@ define(["jquery", "./d3.min", "./d3.layout.cloud", "text!./styles.css"], functio
             canTakeSnapshot : true
         },
         paint : function ($element, layout) {
-          
-          debugger;
-					console.log($element);
-                    console.log(layout);
 		  
           var format = layout.qHyperCube.qMeasureInfo[0].qNumFormat.qFmt;
 		  var d3Format;
